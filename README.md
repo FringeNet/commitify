@@ -88,9 +88,12 @@ Access via the **⚙️ Settings** button in the Source Control tab:
 | Model | Size | Best For | Speed |
 |-------|------|----------|-------|
 | **qwen3:4b** ⭐ | ~2.3GB | Code analysis (recommended) | Fast |
-| codellama | ~3.8GB | Code-specific tasks | Medium |
-| llama3.2 | ~2.0GB | General purpose | Fast |
-| llama3.1 | ~4.7GB | Complex reasoning | Slow |
+| **qwen3:1.7b** | ~1.0GB | Code analysis (faster alternative) | Very Fast |
+| deepseek-r1:8b | ~4.7GB | Code-specific tasks | Medium |
+| deepseek-r1:7b | ~4.1GB | Code-specific tasks | Medium |
+| deepseek-r1:1.5b | ~0.9GB | Code-specific tasks (lightweight) | Very Fast |
+| gemma3:4b | ~2.5GB | General purpose | Fast |
+| gemma3:1b | ~0.6GB | General purpose (lightweight) | Very Fast |
 | mistral | ~4.1GB | Efficient alternative | Medium |
 
 ## Configuration Options
