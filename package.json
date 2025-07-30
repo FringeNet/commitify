@@ -1,0 +1,117 @@
+{
+  "name": "commitify",
+  "displayName": "Commitify - AI Commit Messages",
+  "description": "Generate commit messages using Ollama AI",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/commitify.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:scm"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "commitify.generateCommitMessage",
+        "title": "Generate Commit Message",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "commitify.openSettings",
+        "title": "Commitify Settings",
+        "icon": "$(gear)"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "commitify.generateCommitMessage",
+          "when": "scmProvider == git",
+          "group": "navigation"
+        },
+        {
+          "command": "commitify.openSettings",
+          "when": "scmProvider == git",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Commitify",
+      "properties": {
+        "commitify.ollamaUrl": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Ollama server URL"
+        },
+        "commitify.model": {
+          "type": "string",
+          "default": "qwen3:4b",
+          "description": "Ollama model to use for generating commit messages"
+        },
+        "commitify.processFilesIndividually": {
+          "type": "boolean",
+          "default": true,
+          "description": "Process files individually for better analysis"
+        },
+        "commitify.contextWindow": {
+          "type": "number",
+          "default": 8192,
+          "description": "Token context window size for the model"
+        },
+        "commitify.temperature": {
+          "type": "number",
+          "default": 0.7,
+          "description": "Creativity level for text generation (0.0 - 1.0)"
+        },
+        "commitify.maxLength": {
+          "type": "number",
+          "default": 72,
+          "description": "Maximum length for commit message subject line"
+        },
+        "commitify.includeBody": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include detailed body text in commit messages"
+        },
+        "commitify.commitPromptTemplate": {
+          "type": "string",
+          "default": "",
+          "description": "Custom prompt template for commit message generation. Use {summaries}, {maxLength}, {includeBody} as placeholders."
+        },
+        "commitify.summaryPromptTemplate": {
+          "type": "string",
+          "default": "",
+          "description": "Custom prompt template for file change summarization. Use {filename}, {diff} as placeholders."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

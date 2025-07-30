@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commitify Settings</title>
+    <style>
+        body {
+            font-family: var(--vscode-font-family);
+            font-size: var(--vscode-font-size);
+            font-weight: var(--vscode-font-weight);
+            color: var(--vscode-foreground);
+            background-color: var(--vscode-editor-background);
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .setting-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 6px;
+        }
+        .setting-group h3 {
+            margin-top: 0;
+            color: var(--vscode-textBlockQuote-foreground);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: var(--vscode-input-background);
+            color: var(--vscode-input-foreground);
+            border: 1px solid var(--vscode-input-border);
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--vscode-focusBorder);
+        }
+        button {
+            background-color: var(--vscode-button-background);
+            color: var(--vscode-button-foreground);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: var(--vscode-button-hoverBackground);
+        }
+        button.secondary {
+            background-color: var(--vscode-button-secondaryBackground);
+            color: var(--vscode-button-secondaryForeground);
+        }
+        button.secondary:hover {
+            background-color: var(--vscode-button-secondaryHoverBackground);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .description {
+            font-size: 0.9em;
+            color: var(--vscode-descriptionForeground);
+            margin-bottom: 10px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .status.success {
+            background-color: var(--vscode-inputValidation-infoBackground);
+            border: 1px solid var(--vscode-inputValidation-infoBorder);
+        }
+        .status.error {
+            background-color: var(--vscode-inputValidation-errorBackground);
+            border: 1px solid var(--vscode-inputValidation-errorBorder);
+        }
+        .status.warning {
+            background-color: var(--vscode-inputValidation-warningBackground);
+            border: 1px solid var(--vscode-inputValidation-warningBorder);
+        }
+        .hidden {
+            display: none;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+        .installation-section {
+            background-color: var(--vscode-textBlockQuote-background);
+            border-left: 4px solid var(--vscode-textBlockQuote-border);
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .radio-group {
+            margin-bottom: 15px;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 3px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .radio-item:hover {
+            background-color: var(--vscode-list-hoverBackground);
+        }
+        .radio-item.selected {
+            border-color: var(--vscode-focusBorder);
+            background-color: var(--vscode-list-activeSelectionBackground);
+        }
+        .radio-item input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+        .model-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .model-name {
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .model-size {
+            font-size: 0.8em;
+            color: var(--vscode-descriptionForeground);
+        }
+        .manual-entry {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid var(--vscode-widget-border);
+            border-radius: 3px;
+            background-color: var(--vscode-textBlockQuote-background);
+        }
+        .manual-entry-group {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+        .manual-entry-group input {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        .validation-status {
+            margin-top: 5px;
+            font-size: 0.8em;
+        }
+        .link {
+            color: var(--vscode-textLink-foreground);
+            text-decoration: none;
+        }
+        .link:hover {
+            color: var(--vscode-textLink-activeForeground);
+            text-decoration: underline;
+        }
+        .progress {
+            width: 100%;
+            height: 4px;
+            background-color: var(--vscode-progressBar-background);
+            border-radius: 2px;
+            margin: 5px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--vscode-progressBar-background);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .prompt-template {
+            font-family: monospace;
+            min-height: 120px;
+            font-size: 0.9em;
+        }
+        .template-help {
+            background-color: var(--vscode-textCodeBlock-background);
+            padding: 10px;
+            border-radius: 3px;
+            margin-top: 5px;
+            font-size: 0.8em;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Commitify Settings</h1>
+        
+        <div class="setting-group">
+            <h3>🤖 Ollama Status</h3>
+            <div id="ollamaStatus" class="status hidden"></div>
+            
+            <div id="installationSection" class="installation-section hidden">
+                <h4>Ollama Not Found</h4>
+                <p>Ollama is required for Commitify to work. Please install it:</p>
+                <ul>
+                    <li><a href="#" class="link" id="downloadWindows">Download for Windows</a></li>
+                    <li><a href="#" class="link" id="downloadMac">Download for macOS</a></li>
+                    <li><a href="#" class="link" id="downloadLinux">Download for Linux</a></li>
+                </ul>
+                <p>After installation, restart VS Code and click "Check Ollama Status" below.</p>
+            </div>
+            
+            <button type="button" id="checkOllama" class="secondary">Check Ollama Status</button>
+            <button type="button" id="startOllama" class="secondary" disabled>Start Ollama Service</button>
+        </div>
+
+        <div class="setting-group">
+            <h3>🔗 Connection</h3>
+            <label for="ollamaUrl">Ollama Server URL:</label>
+            <div class="description">The URL where your Ollama server is running</div>
+            <input type="text" id="ollamaUrl" placeholder="http://localhost:11434">
+            
+            <button type="button" id="testConnection" class="secondary">Test Connection</button>
+            
+            <div id="connectionStatus" class="status hidden"></div>
+        </div>
+
+        <div class="setting-group">
+            <h3>🧠 Model Selection</h3>
+            <div class="description">Choose from available models or enter a custom model name</div>
+            
+            <div id="availableModels" class="radio-group">
+                <div class="radio-item">
+                    <span>Loading available models...</span>
+                </div>
+            </div>
+
+            <div class="manual-entry">
+                <label for="customModel">Manual Model Entry:</label>
+                <div class="description">Enter a custom model name (e.g., llama2:7b, codellama:latest)</div>
+                <div class="manual-entry-group">
+                    <input type="text" id="customModel" placeholder="Enter model name...">
+                    <button type="button" id="validateModel" class="secondary">Validate</button>
+                    <button type="button" id="pullCustomModel" class="secondary">Pull Model</button>
+                </div>
+                <div id="modelValidationStatus" class="validation-status status hidden"></div>
+            </div>
+
+            <button type="button" id="refreshModels" class="secondary">Refresh Available Models</button>
+            
+            <div id="modelStatus" class="status hidden"></div>
+            <div id="pullProgress" class="progress hidden">
+                <div id="pullProgressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h3>💬 Message Configuration</h3>
+            <label for="maxLength">Maximum Subject Line Length:</label>
+            <div class="description">Maximum number of characters for the commit subject line</div>
+            <input type="number" id="maxLength" min="50" max="120" value="72">
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="includeBody">
+                <label for="includeBody">Include detailed body text in commit messages</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="processFilesIndividually" checked>
+                <label for="processFilesIndividually">Process files individually for better analysis</label>
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h3>📝 System Prompts</h3>
+            <div class="description">Customize the prompts used for file analysis and commit message generation</div>
+            
+            <label for="summaryPromptTemplate">File Summary Prompt Template:</label>
+            <div class="description">Prompt used to analyze individual file changes. Available placeholders: {filename}, {diff}</div>
+            <textarea id="summaryPromptTemplate" class="prompt-template" placeholder="Leave empty to use default prompt..."></textarea>
+            <div class="template-help">
+                Default: "Analyze the changes in this file and provide a concise summary:
+
+File: {filename}
+
+Diff:
+{diff}
+
+Provide a brief summary (1-2 sentences) of what changed in this file:"
+            </div>
+            
+            <label for="commitPromptTemplate">Commit Message Prompt Template:</label>
+            <div class="description">Prompt used to generate the final commit message. Available placeholders: {summaries}, {maxLength}, {includeBody}</div>
+            <textarea id="commitPromptTemplate" class="prompt-template" placeholder="Leave empty to use default prompt..."></textarea>
+            <div class="template-help">
+                Default: Uses conventional commit format with file summaries as input.
+                Placeholders: {summaries} = list of file changes, {maxLength} = max length, {includeBody} = true/false
+            </div>
+        </div>
+
+        <div class="setting-group">
+            <h3>🔧 Advanced Settings</h3>
+            <label for="contextWindow">Context Window Size:</label>
+            <div class="description">Token context window size for the model</div>
+            <select id="contextWindow">
+                <option value="4096">4K tokens</option>
+                <option value="8192" selected>8K tokens</option>
+                <option value="16384">16K tokens</option>
+                <option value="32768">32K tokens</option>
+            </select>
+            
+            <label for="temperature">Creativity (Temperature):</label>
+            <div class="description">Higher values make output more creative, lower values more focused</div>
+            <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+            <span id="temperatureValue">0.7</span>
+        </div>
+
+        <button type="button" id="saveSettings">Save Settings</button>
+        <button type="button" id="resetSettings" class="secondary">Reset to Defaults</button>
+        
+        <div id="saveStatus" class="status hidden"></div>
+    </div>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        // Elements
+        const ollamaUrlInput = document.getElementById('ollamaUrl');
+        const maxLengthInput = document.getElementById('maxLength');
+        const includeBodyCheckbox = document.getElementById('includeBody');
+        const processFilesIndividuallyCheckbox = document.getElementById('processFilesIndividually');
+        const summaryPromptTextarea = document.getElementById('summaryPromptTemplate');
+        const commitPromptTextarea = document.getElementById('commitPromptTemplate');
+        const contextWindowSelect = document.getElementById('contextWindow');
+        const temperatureSlider = document.getElementById('temperature');
+        const temperatureValue = document.getElementById('temperatureValue');
+        const customModelInput = document.getElementById('customModel');
+
+        // Buttons
+        const checkOllamaBtn = document.getElementById('checkOllama');
+        const startOllamaBtn = document.getElementById('startOllama');
+        const testConnectionBtn = document.getElementById('testConnection');
+        const refreshModelsBtn = document.getElementById('refreshModels');
+        const validateModelBtn = document.getElementById('validateModel');
+        const pullCustomModelBtn = document.getElementById('pullCustomModel');
+        const saveSettingsBtn = document.getElementById('saveSettings');
+        const resetSettingsBtn = document.getElementById('resetSettings');
+
+        // Status elements
+        const ollamaStatus = document.getElementById('ollamaStatus');
+        const installationSection = document.getElementById('installationSection');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const modelStatus = document.getElementById('modelStatus');
+        const modelValidationStatus = document.getElementById('modelValidationStatus');
+        const saveStatus = document.getElementById('saveStatus');
+        const availableModels = document.getElementById('availableModels');
+        const pullProgress = document.getElementById('pullProgress');
+        const pullProgressBar = document.getElementById('pullProgressBar');
+
+        let selectedModel = 'qwen3:4b';
+        let availableModelsList = [];
+
+        // Event listeners
+        temperatureSlider.addEventListener('input', (e) => {
+            temperatureValue.textContent = e.target.value;
+        });
+
+        checkOllamaBtn.addEventListener('click', () => {
+            vscode.postMessage({ command: 'checkOllamaInstallation' });
+        });
+
+        startOllamaBtn.addEventListener('click', () => {
+            vscode.postMessage({ command: 'startOllama' });
+        });
+
+        testConnectionBtn.addEventListener('click', () => {
+            vscode.postMessage({ command: 'testConnection' });
+            showStatus(connectionStatus, 'Testing connection...', 'info');
+        });
+
+        refreshModelsBtn.addEventListener('click', () => {
+            vscode.postMessage({ command: 'getModels' });
+            showStatus(modelStatus, 'Loading models...', 'info');
+        });
+
+        validateModelBtn.addEventListener('click', () => {
+            const modelName = customModelInput.value.trim();
+            if (modelName) {
+                vscode.postMessage({ command: 'validateModel', model: modelName });
+                showStatus(modelValidationStatus, 'Validating model...', 'info');
+            }
+        });
+
+        pullCustomModelBtn.addEventListener('click', () => {
+            const modelName = customModelInput.value.trim();
+            if (modelName) {
+                selectedModel = modelName;
+                vscode.postMessage({ command: 'pullModel', model: modelName });
+                showStatus(modelStatus, `Pulling model ${modelName}...`, 'info');
+                pullProgress.classList.remove('hidden');
+            }
+        });
+
+        customModelInput.addEventListener('input', () => {
+            modelValidationStatus.classList.add('hidden');
+        });
+
+        saveSettingsBtn.addEventListener('click', () => {
+            const settings = {
+                ollamaUrl: ollamaUrlInput.value,
+                model: selectedModel,
+                maxLength: parseInt(maxLengthInput.value),
+                includeBody: includeBodyCheckbox.checked,
+                processFilesIndividually: processFilesIndividuallyCheckbox.checked,
+                summaryPromptTemplate: summaryPromptTextarea.value,
+                commitPromptTemplate: commitPromptTextarea.value,
+                contextWindow: parseInt(contextWindowSelect.value),
+                temperature: parseFloat(temperatureSlider.value)
+            };
+            vscode.postMessage({ command: 'saveSettings', settings });
+        });
+
+        resetSettingsBtn.addEventListener('click', () => {
+            ollamaUrlInput.value = 'http://localhost:11434';
+            selectedModel = 'qwen3:4b';
+            maxLengthInput.value = '72';
+            includeBodyCheckbox.checked = true;
+            processFilesIndividuallyCheckbox.checked = true;
+            summaryPromptTextarea.value = '';
+            commitPromptTextarea.value = '';
+            contextWindowSelect.value = '8192';
+            temperatureSlider.value = '0.7';
+            temperatureValue.textContent = '0.7';
+            customModelInput.value = '';
+            modelValidationStatus.classList.add('hidden');
+            updateModelSelection();
+        });
+
+        // Download links
+        document.getElementById('downloadWindows').href = 'https://ollama.ai/download/windows';
+        document.getElementById('downloadMac').href = 'https://ollama.ai/download/mac';
+        document.getElementById('downloadLinux').href = 'https://ollama.ai/download/linux';
+
+        // Message handling
+        window.addEventListener('message', event => {
+            const message = event.data;
+            
+            switch (message.command) {
+                case 'settingsLoaded':
+                    loadSettings(message.settings);
+                    break;
+                case 'ollamaStatus':
+                    updateOllamaStatus(message.installed, message.running, message.error);
+                    break;
+                case 'connectionTest':
+                    showStatus(connectionStatus, message.message, message.success ? 'success' : 'error');
+                    break;
+                case 'modelsLoaded':
+                    updateModelList(message.models, message.error);
+                    break;
+                case 'modelValidation':
+                    updateModelValidation(message.model, message.status, message.message);
+                    break;
+                case 'modelPullProgress':
+                    updatePullProgress(message.progress, message.status);
+                    break;
+                case 'modelPullComplete':
+                    showStatus(modelStatus, message.success ? 'Model pulled successfully!' : 'Failed to pull model: ' + message.error, message.success ? 'success' : 'error');
+                    pullProgress.classList.add('hidden');
+                    if (message.success) {
+                        vscode.postMessage({ command: 'getModels' });
+                    }
+                    break;
+                case 'settingsSaved':
+                    showStatus(saveStatus, message.success ? 'Settings saved successfully!' : 'Failed to save settings: ' + message.error, message.success ? 'success' : 'error');
+                    break;
+            }
+        });
+
+        function loadSettings(settings) {
+            ollamaUrlInput.value = settings.ollamaUrl;
+            selectedModel = settings.model;
+            maxLengthInput.value = settings.maxLength;
+            includeBodyCheckbox.checked = settings.includeBody;
+            processFilesIndividuallyCheckbox.checked = settings.processFilesIndividually || true;
+            summaryPromptTextarea.value = settings.summaryPromptTemplate || '';
+            commitPromptTextarea.value = settings.commitPromptTemplate || '';
+            contextWindowSelect.value = settings.contextWindow || 8192;
+            temperatureSlider.value = settings.temperature || 0.7;
+            temperatureValue.textContent = settings.temperature || 0.7;
+        }
+
+        function updateOllamaStatus(installed, running, error) {
+            if (!installed) {
+                showStatus(ollamaStatus, 'Ollama is not installed', 'error');
+                installationSection.classList.remove('hidden');
+                startOllamaBtn.disabled = true;
+            } else if (!running) {
+                showStatus(ollamaStatus, 'Ollama is installed but not running', 'warning');
+                installationSection.classList.add('hidden');
+                startOllamaBtn.disabled = false;
+            } else {
+                showStatus(ollamaStatus, 'Ollama is running successfully', 'success');
+                installationSection.classList.add('hidden');
+                startOllamaBtn.disabled = true;
+            }
+            
+            if (error) {
+                showStatus(ollamaStatus, 'Error: ' + error, 'error');
+            }
+        }
+
+        function updateModelList(models, error) {
+            if (error) {
+                showStatus(modelStatus, 'Failed to load models: ' + error, 'error');
+                return;
+            }
+
+            availableModelsList = models;
+            updateModelSelection();
+            showStatus(modelStatus, `${models.length} models loaded`, 'success');
+        }
+
+        function updateModelSelection() {
+            availableModels.innerHTML = '';
+            
+            if (availableModelsList.length === 0) {
+                const noModelsItem = document.createElement('div');
+                noModelsItem.className = 'radio-item';
+                noModelsItem.innerHTML = '<span>No models found. Use manual entry below or pull a model first.</span>';
+                availableModels.appendChild(noModelsItem);
+                return;
+            }
+
+            // Add recommended model first if available
+            const recommendedModel = availableModelsList.find(model => model.name.includes('qwen3:4b'));
+            if (recommendedModel) {
+                addModelRadioItem(recommendedModel, true);
+            }
+
+            // Add other models
+            availableModelsList.forEach(model => {
+                if (!model.name.includes('qwen3:4b')) {
+                    addModelRadioItem(model, false);
+                }
+            });
+        }
+
+        function addModelRadioItem(model, isRecommended) {
+            const radioItem = document.createElement('div');
+            radioItem.className = 'radio-item';
+            
+            const radioInput = document.createElement('input');
+            radioInput.type = 'radio';
+            radioInput.name = 'modelSelection';
+            radioInput.value = model.name;
+            radioInput.checked = selectedModel === model.name;
+            
+            const modelInfo = document.createElement('div');
+            modelInfo.className = 'model-info';
+            
+            const modelName = document.createElement('span');
+            modelName.className = 'model-name';
+            modelName.textContent = model.name + (isRecommended ? ' (Recommended)' : '');
+            
+            const modelSize = document.createElement('span');
+            modelSize.className = 'model-size';
+            modelSize.textContent = model.size || 'Unknown size';
+            
+            modelInfo.appendChild(modelName);
+            modelInfo.appendChild(modelSize);
+            
+            radioItem.appendChild(radioInput);
+            radioItem.appendChild(modelInfo);
+            
+            if (selectedModel === model.name) {
+                radioItem.classList.add('selected');
+            }
+            
+            radioItem.addEventListener('click', () => {
+                // Update selection
+                document.querySelectorAll('.radio-item').forEach(item => {
+                    item.classList.remove('selected');
+                    item.querySelector('input[type="radio"]').checked = false;
+                });
+                
+                radioItem.classList.add('selected');
+                radioInput.checked = true;
+                selectedModel = model.name;
+                customModelInput.value = '';
+                modelValidationStatus.classList.add('hidden');
+            });
+            
+            availableModels.appendChild(radioItem);
+        }
+
+        function updateModelValidation(model, status, message) {
+            let statusClass = 'info';
+            if (status === 'exists') {
+                statusClass = 'success';
+                selectedModel = model;
+            } else if (status === 'pullable') {
+                statusClass = 'warning';
+            } else if (status === 'error' || status === 'unavailable') {
+                statusClass = 'error';
+            }
+            
+            showStatus(modelValidationStatus, message, statusClass);
+        }
+
+        function updatePullProgress(progress, status) {
+            pullProgressBar.style.width = progress + '%';
+            showStatus(modelStatus, status || `Pulling model... ${progress}%`, 'info');
+        }
+
+        function showStatus(element, message, type) {
+            element.textContent = message;
+            element.className = 'status ' + type;
+            element.classList.remove('hidden');
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    element.classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        // Initialize
+        vscode.postMessage({ command: 'loadSettings' });
+        vscode.postMessage({ command: 'checkOllamaInstallation' });
+        vscode.postMessage({ command: 'getModels' });
+    </script>
+</body>
+</html>
