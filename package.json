@@ -3,6 +3,7 @@
   "displayName": "Commitify - AI Commit Messages",
   "description": "Generate commit messages using Ollama AI",
   "version": "0.0.1",
+  "publisher": "FringeNet",
   "engines": {
     "vscode": "^1.74.0"
   },
