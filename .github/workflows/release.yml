@@ -31,6 +31,10 @@ jobs:
     - name: Package extension
       run: vsce package
 
+    - name: Get Package Version
+      id: get_version
+      run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
     - name: Create GitHub Release
       id: create_release
       uses: actions/create-release@v1
@@ -48,6 +52,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./commitify-${{ github.ref_name }}.vsix
+        asset_path: ./commitify-${{ env.PACKAGE_VERSION }}.vsix
         asset_name: commitify-${{ github.ref_name }}.vsix
         asset_content_type: application/octet-stream
