@@ -30,7 +30,7 @@ This project and everyone participating in it is governed by our Code of Conduct
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16 or higher)
+- [Node.js](https://nodejs.org/) (v20 or higher)
 - [VS Code](https://code.visualstudio.com/)
 - [Git](https://git-scm.com/)
 - [Ollama](https://ollama.ai/) (for testing)
