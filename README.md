@@ -22,7 +22,17 @@ A VS Code extension that generates intelligent commit messages using Ollama AI, 
 
 ## Installation
 
-### From Source
+### From VSIX Package (Recommended for Users)
+1. Ensure you have `vsce` installed globally: `npm install -g @vscode/vsce`
+2. Navigate to the extension's root directory in your terminal.
+3. Package the extension: `vsce package`
+4. This will generate a `.vsix` file (e.g., `commitify-0.0.1.vsix`).
+5. In VS Code, go to the Extensions view (`Ctrl+Shift+X` or `Cmd+Shift+X`).
+6. Click on the `...` (More Actions) menu at the top right of the Extensions sidebar.
+7. Select "Install from VSIX..." and choose the `.vsix` file you just created.
+8. Reload VS Code when prompted.
+
+### From Source (For Developers)
 1. Clone this repository
 2. Run `npm install`
 3. Run `npm run compile`
@@ -94,7 +104,8 @@ Access via the **⚙️ Settings** button in the Source Control tab:
 | `commitify.processFilesIndividually` | `true` | Process files separately |
 | `commitify.contextWindow` | `8192` | Token context window size |
 | `commitify.temperature` | `0.7` | Generation creativity level |
-| `commitify.customPrompt` | `""` | Custom prompt template |
+| `commitify.commitPromptTemplate` | `""` | Custom prompt template for commit message generation. Use `{summaries}`, `{maxLength}`, `{includeBody}` as placeholders. |
+| `commitify.summaryPromptTemplate` | `""` | Custom prompt template for file change summarization. Use `{filename}`, `{diff}` as placeholders. |
 
 ## Example Output
 
