@@ -2,10 +2,8 @@ name: Release VS Code Extension
 
 on:
   push:
-    branches:
-      - main # Run on pushes to the main branch
     tags:
-      - 'v*' # Also run on pushes to tags like v1.0.0
+      - 'v*' # Only run on pushes to tags like v1.0.0
 
 jobs:
   release:
@@ -29,11 +27,19 @@ jobs:
       run: npm install -g @vscode/vsce
 
     - name: Package extension
-      run: vsce package
+      run: vsce package -o extension.vsix
 
     - name: Get Package Version
       id: get_version
       run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
+    - name: Verify version consistency
+      run: |
+        if [ "v${{ env.PACKAGE_VERSION }}" != "${{ github.ref_name }}" ]; then
+          echo "Error: Tag version (${{ github.ref_name }}) does not match package.json version (v${{ env.PACKAGE_VERSION }})"
+          exit 1
+        fi
+      shell: bash
 
     - name: Create GitHub Release
       id: create_release
@@ -52,6 +58,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./commitify-${{ env.PACKAGE_VERSION }}.vsix
+        asset_path: ./extension.vsix
         asset_name: commitify-${{ github.ref_name }}.vsix
         asset_content_type: application/octet-stream
